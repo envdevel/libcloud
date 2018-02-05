@@ -3987,10 +3987,11 @@ class GCENodeDriver(NodeDriver):
 
 
         if ex_min_cpu_platform:
-            supported_cpus = self.ex_get_cpu_platform(self.project)
+            supported_cpus = self.ex_get_cpu_platform(location)
             if not ex_min_cpu_platform in supported_cpus:
                 raise ValueError(
-                    'Not a supported CPU Type in project "{}": {}'.format(
+                    'Wrong CPU Type in project "{}" at zone "{}": {}'.format(
+                        self.project,
                         location,
                         ex_min_cpu_platform
                     )
