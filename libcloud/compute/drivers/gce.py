@@ -3985,6 +3985,17 @@ class GCENodeDriver(NodeDriver):
                 }
             }]
 
+
+        if ex_min_cpu_platform:
+            supported_cpus = self.ex_get_cpu_platform(self.project)
+            if not ex_min_cpu_platform in supported_cpus:
+                raise ValueError(
+                    'Not a supported CPU Type in project "{}": {}'.format(
+                        location,
+                        ex_min_cpu_platform
+                    )
+                )
+
         request, node_data = self._create_node_req(
             name, size, image, location, ex_network, ex_tags, ex_metadata,
             ex_boot_disk, external_ip, internal_ip, ex_disk_type,
@@ -4374,14 +4385,6 @@ class GCENodeDriver(NodeDriver):
             obj=node_size, get_selflinks=use_selflinks, objname='size')
 
         if ex_min_cpu_platform:
-            supported_cpus = self.ex_get_cpu_platform(self.project)
-            if not ex_min_cpu_platform in supported_cpus:
-                raise ValueError(
-                    'Not a supported CPU Type in project "{}": {}'.format(
-                        self.project,
-                        ex_min_cpu_platform
-                    )
-                )
             instance_properties['minCpuPlatform'] = ex_min_cpu_platform
 
         return instance_properties
