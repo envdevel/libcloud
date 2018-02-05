@@ -3781,7 +3781,7 @@ class GCENodeDriver(NodeDriver):
             ex_on_host_maintenance=None, ex_automatic_restart=None,
             ex_preemptible=None, ex_image_family=None, ex_labels=None,
             ex_accelerator_type=None, ex_accelerator_count=None,
-            ex_min_cpu_plattform=None):
+            ex_min_cpu_platform=None):
         """
         Create a new node and return a node object for the node.
 
@@ -3919,10 +3919,10 @@ class GCENodeDriver(NodeDriver):
                                         accelerators to attach to the node.
         :type     ex_accelerator_count: ``int`` or ``None``
 
-        :keyword  ex_min_cpu_plattform: The cpu type the VM should use.
+        :keyword  ex_min_cpu_platform: The cpu type the VM should use.
                                         Please look here for possible Names:
                                         - https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform
-        :type     ex_min_cpu_plattform: ``str``, ``unicode`` or ``byte``
+        :type     ex_min_cpu_platform: ``str``, ``unicode`` or ``byte``
 
         :return:  A Node object for the new node.
         :rtype:   :class:`Node`
@@ -3992,7 +3992,7 @@ class GCENodeDriver(NodeDriver):
             ex_can_ip_forward, ex_disks_gce_struct, ex_nic_gce_struct,
             ex_on_host_maintenance, ex_automatic_restart, ex_preemptible,
             ex_subnetwork, ex_labels, ex_accelerator_type,
-            ex_accelerator_count, ex_min_cpu_plattform)
+            ex_accelerator_count, ex_min_cpu_platform)
         self.connection.async_request(request, method='POST', data=node_data)
         return self.ex_get_node(name, location.name)
 
@@ -4151,7 +4151,7 @@ class GCENodeDriver(NodeDriver):
             preemptible=None, tags=None, metadata=None,
             description=None, disks_gce_struct=None, nic_gce_struct=None,
             use_selflinks=True, labels=None, accelerator_type=None,
-            accelerator_count=None, ex_min_cpu_plattform=None):
+            accelerator_count=None, ex_min_cpu_platform=None):
         """
         Create the GCE instance properties needed for instance templates.
 
@@ -4278,10 +4278,10 @@ class GCENodeDriver(NodeDriver):
                                      None.
         :type     accelerator_count: ``int`` or ``None``
 
-        :keyword  ex_min_cpu_plattform: The cpu type the VM should use.
+        :keyword  ex_min_cpu_platform: The cpu type the VM should use.
                                         Please look here for possible Names:
                                         - https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform
-        :type     ex_min_cpu_plattform: ``str``, ``unicode`` or ``byte``
+        :type     ex_min_cpu_platform: ``str``, ``unicode`` or ``byte``
 
         :return:  A dictionary formatted for use with the GCE API.
         :rtype:   ``dict``
@@ -4373,16 +4373,16 @@ class GCENodeDriver(NodeDriver):
         instance_properties['machineType'] = self._get_selflink_or_name(
             obj=node_size, get_selflinks=use_selflinks, objname='size')
 
-        if ex_min_cpu_plattform:
-            supported_cpus = self.ex_get_cpu_plattform(self.project)
-            if not ex_min_cpu_plattform in supported_cpus:
+        if ex_min_cpu_platform:
+            supported_cpus = self.ex_get_cpu_platform(self.project)
+            if not ex_min_cpu_platform in supported_cpus:
                 raise ValueError(
                     'Not a supported CPU Type in project "{}": {}'.format(
                         self.project,
-                        ex_min_cpu_plattform
+                        ex_min_cpu_platform
                     )
                 )
-            instance_properties['minCpuPlattform'] = ex_min_cpu_plattform
+            instance_properties['minCpuPlatform'] = ex_min_cpu_platform
 
         return instance_properties
 
@@ -7558,7 +7558,7 @@ class GCENodeDriver(NodeDriver):
             return None
         return self._to_zone(response)
 
-    def ex_get_cpu_plattform(self, zone):
+    def ex_get_cpu_platform(self, zone):
         # GET https://www.googleapis.com/compute/v1/projects/myproject/zones/[ZONE]
         _zone = self.ex_get_zone(zone)
         if not _zone:
@@ -7854,7 +7854,7 @@ class GCENodeDriver(NodeDriver):
             ex_on_host_maintenance=None, ex_automatic_restart=None,
             ex_preemptible=None, ex_subnetwork=None, ex_labels=None,
             ex_accelerator_type=None, ex_accelerator_count=None,
-            ex_min_cpu_plattform=None):
+            ex_min_cpu_platform=None):
         """
         Returns a request and body to create a new node.
 
@@ -7983,10 +7983,10 @@ class GCENodeDriver(NodeDriver):
                                       with the node.
         :type   ex_accelerator_count: ``int`` or ``None``
 
-        :keyword  ex_min_cpu_plattform: The cpu type the VM should use.
+        :keyword  ex_min_cpu_platform: The cpu type the VM should use.
                                         Please look here for possible Names:
                                         - https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform
-        :type     ex_min_cpu_plattform: ``str``, ``unicode`` or ``byte``
+        :type     ex_min_cpu_platform: ``str``, ``unicode`` or ``byte``
 
         :return:  A tuple containing a request string and a node_data dict.
         :rtype:   ``tuple`` of ``str`` and ``dict``
@@ -8021,7 +8021,7 @@ class GCENodeDriver(NodeDriver):
             accelerator_type=ex_accelerator_type,
             accelerator_count=ex_accelerator_count,
             use_selflinks=use_selflinks,
-            ex_min_cpu_plattform=ex_min_cpu_plattform)
+            ex_min_cpu_platform=ex_min_cpu_platform)
         node_data['name'] = name
 
         request = '/zones/%s/instances' % (location.name)
